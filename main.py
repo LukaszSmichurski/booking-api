@@ -2,8 +2,27 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr
 from typing import List, Dict
 from datetime import date, time
+from fastapi.middleware.cors import CORSMiddleware # Dodaj ten import
 
 app = FastAPI()
+
+# Dodaj ten blok kodu po inicjalizacji app = FastAPI()
+origins = [
+    "http://localhost", # Jeśli testujesz lokalnie
+    "http://localhost:8000", # Jeśli testujesz lokalnie na innym porcie
+    "null", # Czasem potrzebne dla plików otwieranych bezpośrednio z dysku (file://)
+    "http://127.0.0.1:5500", # Przykład dla Live Server w VS Code
+    # Dodaj tutaj adres URL, pod którym hostujesz swoją stronę front-end
+    "https://lukaszsmichurski.github.io"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Pozwól na wszystkie metody (GET, POST, PUT, DELETE itp.)
+    allow_headers=["*"], # Pozwól na wszystkie nagłówki
+)
 
 # Prosta baza danych: dostępne sloty
 available_slots: Dict[date, List[time]] = {
